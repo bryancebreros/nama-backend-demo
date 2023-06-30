@@ -2,22 +2,25 @@ from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
 from app.modules.embedings import Embeddings
 from langchain.llms import OpenAIChat
+from app.modules.context import FolderSearch
 
 load_dotenv()
 
 
 class Prompt:
-    context = None
+    context = False
     db = None
     qa = None
 
     def __init__(self):
-        self.context = False
-        self.documents = self.context
+        self.context = FolderSearch()
+        self.documents = self.context.check_for_new_document()
 
         if self.documents:
+            print("entró al if")
             self.db = Embeddings.updateEmbeddings(self.documents)
         else:
+            print("no entró")
             self.db = Embeddings.getEmbeddings()
 
         self.qa = RetrievalQA.from_chain_type(
