@@ -8,13 +8,16 @@ from langchain.document_loaders import PyPDFDirectoryLoader
 
 
 class FolderSearch:
-    def __init__(self, folder_path="../static/"):
+    def __init__(self, folder_path="app/static"):
+        print(folder_path)
         self.folder_path = folder_path
 
     def check_for_new_document(self):
+        print(self.folder_path)
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        os.chdir(self.folder_path)
+        # os.chdir(self.folder_path)
+        os.chdir("app/static")
         new_files = glob.glob("*")
         cursor.execute(
             """
@@ -31,10 +34,14 @@ class FolderSearch:
             cursor.execute("INSERT INTO file (elements) VALUES (?) ", (files_json,))
             conn.commit()
             conn.close()
-            print('Context has been updated!')
-            loader = PyPDFDirectoryLoader(self.folder_path)
-            documents = loader.load()
-            return documents
+            print("Context has been created!")
+            print(self.folder_path)
+            # loader = PyPDFDirectoryLoader(self.folder_path)
+            # loader = PyPDFDirectoryLoader("app/static")
+            # documents = loader.load()
+            # return documents
+            os.chdir("../..")
+            return True
 
         array_json = result[0]
         old_files = json.loads(array_json)
@@ -43,19 +50,22 @@ class FolderSearch:
             cursor.execute("UPDATE file SET elements = ? WHERE id = 1", (files_json,))
             conn.commit()
             conn.close()
-            print('Context has been updated!')
-            loader = PyPDFDirectoryLoader(self.folder_path)
-            documents = loader.load()
-            return documents
-        print('No updates in context.')
+            print("Context has been updated!")
+            # loader = PyPDFDirectoryLoader(self.folder_path)
+            # loader = PyPDFDirectoryLoader("app/static")
+            # documents = loader.load()
+            # print(documents)
+            # return documents
+            os.chdir("../..")
+            return True
+        print("No updates in context.")
         conn.close()
         return False
 
 
+# folder_search = FolderSearch()
 
-folder_search = FolderSearch()
-
-folder_search.check_for_new_document()
+# folder_search.check_for_new_document()
 
 # if has_new_document:
 #     print("There is a new document in the folder.")
