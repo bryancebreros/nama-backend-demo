@@ -8,7 +8,7 @@ from langchain.document_loaders import PyPDFDirectoryLoader
 
 
 class FolderSearch:
-    def __init__(self, folder_path="app/static"):
+    def __init__(self, folder_path="../static/"):
         self.folder_path = folder_path
 
     def check_for_new_document(self):
@@ -16,8 +16,6 @@ class FolderSearch:
         cursor = conn.cursor()
         os.chdir(self.folder_path)
         new_files = glob.glob("*")
-        new_files = ["go"]
-        print(new_files)
         cursor.execute(
             """
                 CREATE TABLE IF NOT EXISTS file (
@@ -28,13 +26,15 @@ class FolderSearch:
         )
         cursor.execute("SELECT elements FROM file")
         result = cursor.fetchone()
-        print("r", result)
         if result is None:
-            print("entro")
             files_json = json.dumps(new_files)
             cursor.execute("INSERT INTO file (elements) VALUES (?) ", (files_json,))
             conn.commit()
             conn.close()
+            print('Context has been updated!')
+            loader = PyPDFDirectoryLoader(self.folder_path)
+            documents = loader.load()
+            return documents
 
         array_json = result[0]
         old_files = json.loads(array_json)
@@ -43,21 +43,19 @@ class FolderSearch:
             cursor.execute("UPDATE file SET elements = ? WHERE id = 1", (files_json,))
             conn.commit()
             conn.close()
-            print("Context has been updated!")
+            print('Context has been updated!')
             loader = PyPDFDirectoryLoader(self.folder_path)
             documents = loader.load()
             return documents
-            # print('diferentes')
-            # return True
+        print('No updates in context.')
         conn.close()
         return False
 
 
-# folder_path = '../static'
 
-# folder_search = FolderSearch(folder_path)
+folder_search = FolderSearch()
 
-# folder_search.check_for_new_document()
+folder_search.check_for_new_document()
 
 # if has_new_document:
 #     print("There is a new document in the folder.")
