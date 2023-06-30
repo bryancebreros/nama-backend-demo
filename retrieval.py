@@ -1,36 +1,53 @@
+import traceback
 from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.text_splitter import CharacterTextSplitter
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import PyPDFDirectoryLoader
+from langchain.vectorstores import DeepLake
+from langchain.text_splitter import CharacterTextSplitter
+
 
 load_dotenv()
 
-# loads context by reading all pdfs in the "context" folder
+flag = False
+print("executin retrieval")
 try:
-    loader = PyPDFDirectoryLoader("context")
-   
-    documents = loader.load()
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-    texts = text_splitter.split_documents(documents)
+    loader = PyPDFDirectoryLoader("app/static")
+    docs = loader.load()
+    splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = splitter.split_documents(docs)
     embeddings = OpenAIEmbeddings()
-    # we ask OpenAI for the embeddings of our document and we load them
-    # into a chroma database
-    docsearch = Chroma.from_documents(texts, embeddings)
-except Exception:
-    print("error while loading context ")
+    if flag:
+        db = DeepLake.from_documents(
+            texts, dataset_path="./my_deeplake/", embedding=embeddings, overwrite=True
+        )
+    else:
+        db = DeepLake(
+            dataset_path="./my_deeplake/", embedding_function=embeddings, read_only=True
+        )
+except Exception as e:
+    # Print the exception message
+    print("An error occurred:")
+    print(e)
 
+    # Print the traceback
+    print("error while loading context ")
+    traceback.print_exc()
 else:
     print("context loaded successfully")
 
+    # qa = RetrievalQA.from_chain_type(
+    #     llm=OpenAI(client="nama"),
+    #     chain_type="stuff",
+    #     retriever=conn,  # Use SQLite connection as the retriever
+    #     table_name="document_embeddings",
+    # )
     qa = RetrievalQA.from_chain_type(
         llm=OpenAI(client="nama"),
         chain_type="stuff",
-        retriever=docsearch.as_retriever(search_kwargs={"k": 1}),
+        retriever=db.as_retriever(),
     )
-
     while True:
         query = input(
             """Please enter your request or type "exit":
@@ -44,14 +61,3 @@ else:
             print(demo)
             query = demo
         print("A:", qa.run(query))
-
-# query = """which are the three types of questions I
-# can ask in a survey or poll?"""
-
-# query2 = """can you give me an example of
-# the multiple choice type of question?"""
-
-# print("Q:", query)
-# print("A:", qa.run(query))
-# print("Q:", query2)
-# print("A:", qa.run(query2))
