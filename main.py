@@ -6,7 +6,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
-api.add_resource(ChatGPT, '/question')
+api.add_resource(ChatGPT, "/question")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
