@@ -17,8 +17,8 @@ class FolderSearch:
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         # os.chdir(self.folder_path)
-        os.chdir("app/static")
-        new_files = glob.glob("*")
+        # os.chdir("app/static")
+        new_files = glob.glob("app/static/*")
         cursor.execute(
             """
                 CREATE TABLE IF NOT EXISTS file (
@@ -40,7 +40,7 @@ class FolderSearch:
             # loader = PyPDFDirectoryLoader("app/static")
             # documents = loader.load()
             # return documents
-            os.chdir("../..")
+            # os.chdir("../..")
             return True
 
         array_json = result[0]
@@ -56,7 +56,7 @@ class FolderSearch:
             # documents = loader.load()
             # print(documents)
             # return documents
-            os.chdir("../..")
+            # os.chdir("../..")
             return True
         print("No updates in context.")
         conn.close()

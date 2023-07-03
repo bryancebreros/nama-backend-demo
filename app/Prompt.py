@@ -17,17 +17,8 @@ class Prompt:
         # self.context = FolderSearch()
         # self.documents = self.context.check_for_new_document()
         try:
-            self.context = FolderSearch().check_for_new_document()
-            print("context: ", self.context)
-            if self.context:
-                loader = PyPDFDirectoryLoader("app/static")
-                docs = loader.load()
-                print("entró al if")
-                self.db = Embeddings.updateEmbeddings(docs)
-            else:
-                print("no entró")
+            if self.checkContext() == False:
                 self.db = Embeddings.getEmbeddings()
-
             self.qa = RetrievalQA.from_chain_type(
                 llm=OpenAIChat(model="gpt-3.5-turbo"),
                 chain_type="stuff",
@@ -35,6 +26,19 @@ class Prompt:
             )
         except Exception as e:
             print("Error: ", e)
+
+    def checkContext(self):
+        self.context = FolderSearch().check_for_new_document()
+        print("context: ", self.context)
+        if self.context:
+            loader = PyPDFDirectoryLoader("app/static")
+            docs = loader.load()
+            print("entró al if")
+            self.db = Embeddings.updateEmbeddings(docs)
+            return True
+        else:
+            print("no entró")
+            return False
 
     def query(self, question):
         return self.qa.run(question)
