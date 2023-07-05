@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 import werkzeug
 import os
+import glob
 
 fileType = werkzeug.datastructures.FileStorage
 
@@ -38,3 +39,8 @@ class Files(Resource):
             return {"message": "File deleted"}
         else:
             return {"message": "File not found"}, 404
+
+    def get(self):
+        files = glob.glob("app/static/*")
+        new_files = [file_name.replace("app/static/", "") for file_name in files]
+        return {"files": new_files}

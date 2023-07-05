@@ -62,6 +62,11 @@ class FolderSearch:
         conn.close()
         return False
 
+    def getFiles(self):
+        files = glob.glob("app/static/*")
+        new_files = [file_name.replace("app/static/", "") for file_name in files]
+        print(new_files)
+
 
 # folder_search = FolderSearch()
 

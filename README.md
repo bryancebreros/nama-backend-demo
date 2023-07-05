@@ -2,7 +2,7 @@
 Answer questions with  chatGPT 3.5 using pdfs as context 
 # Ask a question
 POST
-Endpoint: question
+Endpoint: /question
 content-Type: application/json
 body: {
     "question": "your question"
@@ -10,10 +10,13 @@ body: {
 }
 # Upload a file 
 POST
-Endpoint: files
+Endpoint: /files
 content-Type: multipart/form-data
 body: 
     file: file.pdf
 # Delete a file 
 DELETE
 Endpoint: files/<file_name>
+# Get files in context
+GET
+Endpoint: /files
