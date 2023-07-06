@@ -8,21 +8,6 @@ fileType = werkzeug.datastructures.FileStorage
 
 
 class Files(Resource):
-    # def post(self):
-    #     parser = reqparse.RequestParser()
-    #     parser.add_argument("file", type=fileType, location="files", required=True)
-    #     args = parser.parse_args()
-    #     fileArg = args["file"]
-    #     folder = "app/static"
-    #     if not os.path.exists(folder):
-    #         print("no exists")
-    #         os.makedirs(folder)
-    #     # file_name = werkzeug.utils.secure_filename(fileArg.filename)
-    #     # file_route = os.path.join(folder, file_name)
-    #     file_name = fileArg.filename
-    #     file_route = os.path.join(folder, file_name)
-    #     fileArg.save(file_route)
-    #     return {"message": "File received"}
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument(
@@ -41,22 +26,35 @@ class Files(Resource):
             file.save(file_path)
         return {"message": "Files received", "file_names": file_names}
 
-    def delete(self, file_name):
-        # print(file_name)
-        # return {"message": file_name}
+    # def delete(self, file_name):
+    #     # print(file_name)
+    #     # return {"message": file_name}
+    #     folder = "app/static"
+    #     file_route = os.path.join(
+    #         folder,
+    #         file_name + ".pdf",
+    #     )
+    #     # print(file_route)
+    #     # Verificar si el archivo existe
+    #     if os.path.isfile(file_route):
+    #         # Eliminar el archivo
+    #         os.remove(file_route)
+    #         return {"message": "File deleted"}
+    #     else:
+    #         return {"message": "File not found"}, 404
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("files", type=str, action="append", required=True)
+        args = parser.parse_args()
+        files = args["files"]
         folder = "app/static"
-        file_route = os.path.join(
-            folder,
-            file_name + ".pdf",
-        )
-        # print(file_route)
-        # Verificar si el archivo existe
-        if os.path.isfile(file_route):
-            # Eliminar el archivo
-            os.remove(file_route)
-            return {"message": "File deleted"}
-        else:
-            return {"message": "File not found"}, 404
+        deleted = []
+        for file in files:
+            file_route = os.path.join(folder, file)
+            if os.path.isfile(file_route):
+                os.remove(file_route)
+                deleted.append(file)
+        return {"message": "Files deleted", "deleted": deleted}
 
     def get(self):
         files = glob.glob("app/static/*")
