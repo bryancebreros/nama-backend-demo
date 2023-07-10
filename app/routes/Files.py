@@ -26,22 +26,6 @@ class Files(Resource):
             file.save(file_path)
         return {"message": "Files received", "file_names": file_names}
 
-    # def delete(self, file_name):
-    #     # print(file_name)
-    #     # return {"message": file_name}
-    #     folder = "app/static"
-    #     file_route = os.path.join(
-    #         folder,
-    #         file_name + ".pdf",
-    #     )
-    #     # print(file_route)
-    #     # Verificar si el archivo existe
-    #     if os.path.isfile(file_route):
-    #         # Eliminar el archivo
-    #         os.remove(file_route)
-    #         return {"message": "File deleted"}
-    #     else:
-    #         return {"message": "File not found"}, 404
     def delete(self):
         parser = reqparse.RequestParser()
         parser.add_argument("files", type=str, action="append", required=True)

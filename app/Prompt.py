@@ -14,8 +14,6 @@ class Prompt:
     qa = None
 
     def __init__(self):
-        # self.context = FolderSearch()
-        # self.documents = self.context.check_for_new_document()
         try:
             if self.checkContext() == False:
                 self.db = Embeddings.getEmbeddings()
@@ -33,11 +31,9 @@ class Prompt:
         if self.context:
             loader = PyPDFDirectoryLoader("app/static")
             docs = loader.load()
-            print("entró al if")
             self.db = Embeddings.updateEmbeddings(docs)
             return True
         else:
-            print("no entró")
             return False
 
     def query(self, question):
