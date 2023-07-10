@@ -24,7 +24,7 @@ Answer questions with  chatGPT 3.5 using pdfs as context
 
       python -m venv venv
   depending on your OS.
-  - activate the virtual environment with
+- activate the virtual environment with
 
         source venv/bin/activate
 - create a `.env` file with the api key for OpenAI:
