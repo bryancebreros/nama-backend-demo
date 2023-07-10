@@ -1,5 +1,9 @@
+# nama specific
+
 my_deeplake/
 database.db
+app/static/*.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
