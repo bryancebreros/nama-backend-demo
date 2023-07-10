@@ -1,5 +1,3 @@
-# cargar lo que hay en base de datos
-# investigar cómo calcular el hash y ver si ya hay un nuevo documento, funcion que retorna
 import os
 import glob
 import json
@@ -16,8 +14,6 @@ class FolderSearch:
         print(self.folder_path)
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        # os.chdir(self.folder_path)
-        # os.chdir("app/static")
         new_files = glob.glob("app/static/*")
         cursor.execute(
             """
@@ -36,11 +32,6 @@ class FolderSearch:
             conn.close()
             print("Context has been created!")
             print(self.folder_path)
-            # loader = PyPDFDirectoryLoader(self.folder_path)
-            # loader = PyPDFDirectoryLoader("app/static")
-            # documents = loader.load()
-            # return documents
-            # os.chdir("../..")
             return True
 
         array_json = result[0]
@@ -51,12 +42,6 @@ class FolderSearch:
             conn.commit()
             conn.close()
             print("Context has been updated!")
-            # loader = PyPDFDirectoryLoader(self.folder_path)
-            # loader = PyPDFDirectoryLoader("app/static")
-            # documents = loader.load()
-            # print(documents)
-            # return documents
-            # os.chdir("../..")
             return True
         print("No updates in context.")
         conn.close()
@@ -68,16 +53,3 @@ class FolderSearch:
         print(new_files)
 
 
-# folder_search = FolderSearch()
-
-# folder_search.check_for_new_document()
-
-# if has_new_document:
-#     print("There is a new document in the folder.")
-# else:
-#     print("No new document found in the folder.")
-
-
-# Clase que carga lo que hay de base de datos
-# Checa si hay un cambio para reacalcular
-# retorna los documentos parseados
