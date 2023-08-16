@@ -3,7 +3,7 @@
 # si no, solo usa el que ya tenía
 # Recibe
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import DeepLake
 from dotenv import load_dotenv
 
