@@ -5,9 +5,9 @@ from app.routes.Files import Files
 from flask_cors import CORS
 
 app = Flask(__name__)
+
 CORS(app)
 api = Api(app)
-
 
 api.add_resource(ChatGPT, "/question")
 # api.add_resource(Files, "/upload")

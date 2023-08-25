@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
 from app.modules.embedings import Embeddings
 from langchain.llms import OpenAIChat
+from langchain.chat_models import ChatOpenAI
 from app.modules.context import FolderSearch
 from langchain.document_loaders import PyPDFDirectoryLoader
 
@@ -17,11 +18,11 @@ class Prompt:
         try:
             if self.checkContext() == False:
                 self.db = Embeddings.getEmbeddings()
-            self.qa = RetrievalQA.from_chain_type(
-                llm=OpenAIChat(model="gpt-3.5-turbo"),
-                chain_type="stuff",
-                retriever=self.db.as_retriever(),
-            )
+                self.qa = RetrievalQA.from_chain_type(
+                    llm=OpenAIChat(model="gpt-3.5-turbo"),
+                    chain_type="stuff",
+                    retriever=self.db.as_retriever(),
+                )
         except Exception as e:
             print("Error: ", e)
 
@@ -38,6 +39,5 @@ class Prompt:
 
     def query(self, question):
         return self.qa.run(question)
-
     def ask(self, question):
         return self.llm_chain.run(question)

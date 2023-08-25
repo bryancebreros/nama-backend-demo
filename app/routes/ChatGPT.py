@@ -13,9 +13,14 @@ class ChatGPT(Resource):
         args = parser.parse_args()
         print("args", args)
         question = args["question"]
+        print(question)
         documentation = args["documentation"]
         if documentation == "1":
+
+            print("LA")
             response = self.prompt.query(question)
+            print("LO")
+            print(response)
         else:
             response = self.prompt.ask(question)
         return {"question": question, "response": response}
